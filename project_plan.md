@@ -22,7 +22,7 @@ We will be using the DVD rental database: https://www.postgresqltutorial.com/pos
 TBD
 
 ## Solution Architecture
-TBD
+![plot](./dec_project2_solution_architecture.drawio.png)
 
 ## Breakdown of Tasks
 We will be using Trello to break down and assign tasks.
