@@ -19,7 +19,7 @@ Which types of films have the highest/lowest rental sales?
 We will be using the DVD rental database: https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/
 
 ## Business Process Modelling
-TBD
+![plot](./dec_project2_erd.drawio.png)
 
 ## Solution Architecture
 ![plot](./dec_project2_solution_architecture.drawio.png)
