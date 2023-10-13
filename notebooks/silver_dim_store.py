@@ -9,7 +9,7 @@
 
 # COMMAND ----------
 
-from pyspark.sql.functions import col, json_tuple, current_timestamp, concat_ws, md5
+from pyspark.sql.functions import col, json_tuple, current_timestamp, concat_ws, md5, explode
 from delta.tables import DeltaTable
 
 # COMMAND ----------
@@ -35,8 +35,8 @@ df_store_norm = df_store.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_d
     .toDF("_airbyte_ab_id","store_id","manager_staff_id","address_id","last_update")
 df_address_norm = df_address.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_data"),"address_id","address","address2","district","city_id","postal_code","phone","last_update")) \
     .toDF("_airbyte_ab_id","address_id","address","address2","district","city_id","postal_code","phone","last_update")
-df_city_norm = df_city.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_data"),"city_id","city","last_update")) \
-    .toDF("_airbyte_ab_id","city_id","city","last_update")
+df_city_norm = df_city.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_data"),"city_id","city","country_id","last_update")) \
+    .toDF("_airbyte_ab_id","city_id","city","country_id","last_update")
 df_country_norm = df_country.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_data"),"country_id","country","last_update")) \
     .toDF("_airbyte_ab_id","country_id","country","last_update")
 
@@ -96,6 +96,24 @@ ge_df_country = SparkDFDataset(df_country_norm)
 expectation_country = ge_df_country.expect_column_values_to_not_be_null("country_id")
 if not expectation_country["success"]: 
     raise Exception(expectation_country)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Form Dimension Table
+
+# COMMAND ----------
+
+df_dim_store = df_store_norm.alias("s").join(
+    other=df_address_norm.alias("a"), on="address_id", how="inner").join(
+    other=df_city_norm.alias("ci"), on="city_id", how="inner").join(
+    other=df_country_norm.alias("co"), on="country_id", how="inner").select("s.store_id", "a.city_id", "a.district", "s.last_update", "ci.city","ci.country_id","co.country")
+
+display(df_dim_store)
+
+df_dim_store = df_dim_store.select("store_id", "district", "city", "country","last_update")
+
+display(df_dim_store)
 
 # COMMAND ----------
 
