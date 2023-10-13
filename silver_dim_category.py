@@ -1,5 +1,5 @@
 # Databricks notebook source
-from pyspark.sql.functions import col, json_tuple, current_timestamp, concat_ws, md5
+from pyspark.sql.functions import col, json_tuple, current_timestamp, concat_ws, md5, to_date, current_date
 from delta.tables import DeltaTable
 
 # COMMAND ----------
@@ -93,14 +93,9 @@ df_norm.createOrReplaceTempView("table_norm")
 
 # MAGIC %sql
 # MAGIC CREATE OR REPLACE TABLE INSERTED_TODAY AS
-# MAGIC   SELECT DISTINCT CATEGORY_KEY, START_DATE
+# MAGIC   SELECT DISTINCT CATEGORY_ID, START_DATE
 # MAGIC   FROM MAIN.DEFAULT.dim_category
 # MAGIC   WHERE DATE(start_date) = current_date()
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select * from inserted_today
 
 # COMMAND ----------
 
@@ -108,7 +103,7 @@ df_norm.createOrReplaceTempView("table_norm")
 # MAGIC
 # MAGIC MERGE INTO main.default.dim_category as target
 # MAGIC USING INSERTED_TODAY as source
-# MAGIC ON source.category_key=target.category_key and target.start_date < source.start_date
+# MAGIC ON source.category_id=target.category_id and target.start_date < source.start_date
 # MAGIC WHEN MATCHED THEN UPDATE SET end_date = current_timestamp()
 
 # COMMAND ----------
