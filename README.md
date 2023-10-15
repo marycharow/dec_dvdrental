@@ -14,6 +14,8 @@ TBD-insert screenshot
 ### Hosting DVD rental database on RDS
 We created an RDS instance as shown to host the PostgreSQL database
 
+![plot](./dec_project2_rds.png)
+
 ### Creating a Databricks workspace
 TBD
 
@@ -31,6 +33,6 @@ TBD
 ## 5. VISUALIZATION
 We have created a <a href="https://efe6400f.us2a.app.preset.io/superset/dashboard/9/?native_filters_key=o98dQ_AqNUVy7Zn6i-ZBS1lqSgPF7V8kZBJ0Umb5bpjrHXT82eRA_ww8DPkj0MMW">Preset dashboard</a> to visualize key metrics that we created in the semantic layer, such as total_customers, active_customers, total_rentals, and total_films_rented
 
-TBD-insert screenshot
+![plot](./dec_project2_preset.jpg)
 
    
