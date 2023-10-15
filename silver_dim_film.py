@@ -1,6 +1,6 @@
 # Databricks notebook source
 from pyspark.sql.functions import col, json_tuple, current_timestamp, concat_ws, md5
-from delta.tables import DeltaTable
+from pyspark.sql.types import StringType,BooleanType,DateType,IntegerType,TimestampType
 
 # COMMAND ----------
 
@@ -36,8 +36,8 @@ df_language_norm = df_language.select(col("_airbyte_ab_id"),json_tuple(col("_air
 
 # COMMAND ----------
 
-df_film_category_norm = df_film_category.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_data"),"film_id","category_id","last_update")) \
-    .toDF("_airbyte_ab_id","film_id","category_id","last_update")
+df_film_category_norm = df_film_category.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_data"),"film_id","category_id","rental_duration","last_update")) \
+    .toDF("_airbyte_ab_id","film_id","category_id","rental_duration","last_update")
 
 # COMMAND ----------
 
@@ -59,7 +59,7 @@ ge_silver_df_film = SparkDFDataset(df_film_norm)
 
 # COMMAND ----------
 
-for col in ["film_id","language_id","last_update"]:
+for col in ["film_id","language_id","rental_duration","last_update"]:
     expectation = ge_silver_df_film.expect_column_values_to_not_be_null(col)
     if not expectation["success"]: 
         raise Exception(expectation)
@@ -118,9 +118,25 @@ for col in ["film_id","category_id"]:
 df_film_silver = df_film_norm.alias("f").join( \
     other=df_language_norm.alias("ln"), on="language_id", how="inner").join( \
     other=df_film_category_norm.alias("fc"), on="film_id", how="inner") \
-    .select("f.film_id","f.title","f.release_year","f.rating","ln.name","fc.category_id") \
-    .withColumn("last_update", current_timestamp()) \
+    .select("f.film_id","f.title","f.release_year","f.rating","f.rental_duration","ln.name","fc.category_id","f.last_update") \
     .withColumnRenamed("name", "language")
+
+# COMMAND ----------
+
+display(df_film_silver)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Apply few remaining transformations
+
+# COMMAND ----------
+
+df_film_silver = df_film_silver.withColumn("film_id",df_film_silver.film_id.cast(IntegerType())) \
+.withColumn("release_year",df_film_silver.release_year.cast(IntegerType())) \
+.withColumn("rental_duration",df_film_silver.rental_duration.cast(IntegerType())) \
+.withColumn("category_id", df_film_silver.category_id.cast(IntegerType())) \
+.withColumn("last_update", df_film_silver.last_update.cast(TimestampType()))
 
 # COMMAND ----------
 
@@ -129,7 +145,7 @@ df_film_silver = df_film_norm.alias("f").join( \
 
 # COMMAND ----------
 
-df_film_silver = df_film_silver.withColumn("film_key", md5("film_id"))
+df_film_silver = df_film_silver.withColumn("film_key", md5(concat_ws("-", df_film_silver.film_id, df_film_silver.last_update)))
 
 # COMMAND ----------
 
@@ -144,9 +160,14 @@ df_film_silver.createOrReplaceTempView("film_silver_source")
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC MERGE INTO main.default.dim_film as target
-# MAGIC USING film_silver_source as source
-# MAGIC ON target.film_key = source.film_key
-# MAGIC WHEN NOT MATCHED THEN
-# MAGIC   INSERT (film_id, title, release_year, rating, language, category_id, last_update, film_key) 
-# MAGIC   VALUES (source.film_id,  source.title, source.release_year, source.rating, source.language, source.category_id, source.last_update, source.film_key)
+# MAGIC CREATE OR REPLACE TABLE MAIN.DEFAULT.dim_film as
+# MAGIC   select film_id,
+# MAGIC          title,
+# MAGIC          release_year,
+# MAGIC          rating,
+# MAGIC          rental_duration,
+# MAGIC          language,
+# MAGIC          category_id,
+# MAGIC          last_update,
+# MAGIC          film_key
+# MAGIC   FROM film_silver_source;
