@@ -1,6 +1,5 @@
 # Databricks notebook source
 from pyspark.sql.functions import col, json_tuple, current_timestamp, concat_ws, md5
-from delta.tables import DeltaTable
 from pyspark.sql.types import StringType,BooleanType,DateType,IntegerType,TimestampType
 
 # COMMAND ----------
@@ -14,10 +13,6 @@ df_customer = spark.read.table("main.default._airbyte_raw_customer")
 
 # COMMAND ----------
 
-display(df_customer)
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC ### Normalize dataframes
 
@@ -25,10 +20,6 @@ display(df_customer)
 
 df_customer_norm = df_customer.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_data"),"customer_id","store_id","first_name","last_name","activebool","create_date","last_update","active")) \
     .toDF("_airbyte_ab_id","customer_id","store_id","first_name","last_name","activebool","create_date","last_update","active")
-
-# COMMAND ----------
-
-display(df_customer_norm)
 
 # COMMAND ----------
 
@@ -74,28 +65,24 @@ if not expectation2["success"]:
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC ### Apply few remaining transformations
+
+# COMMAND ----------
+
+df_customer_norm = df_customer_norm.withColumn("customer_id",df_customer_norm.customer_id.cast(IntegerType())) \
+.withColumn("store_id",df_customer_norm.store_id.cast(IntegerType())) \
+.withColumn("is_active_customer",df_customer_norm.is_active_customer.cast(BooleanType())) \
+.withColumn("create_date", df_customer_norm.create_date.cast(DateType())) \
+.withColumn("last_update", df_customer_norm.last_update.cast(TimestampType()))
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ### Add surrogate key
 
 # COMMAND ----------
 
 df_customer_norm = df_customer_norm.withColumn("customer_key", md5(concat_ws("-", df_customer_norm.customer_id, df_customer_norm.last_update)))
-
-# COMMAND ----------
-
-display(df_customer_norm)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Apply few remaining transformations
-
-# COMMAND ----------
-
-df_customer_norm = df_customer_norm.withColumn("customer_id",col("customer_id").cast(IntegerType())) \
-.withColumn("store_id",col("store_id").cast(IntegerType())) \
-.withColumn("is_active_customer",col("is_active_customer").cast(BooleanType())) \
-.withColumn("create_date", col("create_date").cast(DateType())) \
-.withColumn("last_update", col("last_update").cast(TimestampType()))
 
 # COMMAND ----------
 

@@ -123,10 +123,6 @@ df_film_silver = df_film_norm.alias("f").join( \
 
 # COMMAND ----------
 
-display(df_film_silver)
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC ### Apply few remaining transformations
 
