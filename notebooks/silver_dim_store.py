@@ -124,13 +124,18 @@ display(df_dim_store)
 
 df_dim_store = df_dim_store.withColumn("store_key", \
         md5(concat_ws('-', col("store_id"), \
-        col("city"))))
+        col("last_update"))))
 
 df_dim_store = df_dim_store.select("store_key", "store_id", "district", "city", "country","last_update")
 
 # COMMAND ----------
 
 display(df_dim_store)
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC DROP TABLE IF EXISTS main.default.dim_store;
 
 # COMMAND ----------
 
