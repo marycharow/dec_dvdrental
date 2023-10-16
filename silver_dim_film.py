@@ -167,3 +167,10 @@ df_film_silver.createOrReplaceTempView("film_silver_source")
 # MAGIC          last_update,
 # MAGIC          film_key
 # MAGIC   FROM film_silver_source;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE OR REPLACE TABLE HIVE_METASTORE.DEFAULT.dim_film as
+# MAGIC   select *
+# MAGIC   FROM MAIN.DEFAULT.dim_film;
