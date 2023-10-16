@@ -94,41 +94,7 @@ df_stg_fact_rentals = df_stg_fact_rentals.withColumn("rental_key", md5(concat_ws
 # COMMAND ----------
 
 # Replace stg_fact_rentals
-df_stg_fact_rentals.write.saveAsTable("main.default.stg_fact_rentals_updated")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC # BEGIN IGNORE: Manual verification of stg_fact_rentals
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select * from main.default.stg_fact_rentals_updated
-# MAGIC limit 10;
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select * from main.default.dim_film
-# MAGIC where film_id = "333"
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select * from main.default.stg_rental
-# MAGIC where customer_id = "459" and rental_id = "2"
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select * from main.default.stg_staff
-# MAGIC where staff_id = "1"
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC # END IGNORE: Manual verification of stg_fact_rentals
+df_stg_fact_rentals.write.mode("overwrite").saveAsTable("main.default.stg_fact_rentals_updated")
 
 # COMMAND ----------
 
@@ -138,7 +104,7 @@ df_stg_fact_rentals.write.saveAsTable("main.default.stg_fact_rentals_updated")
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC DROP TABLE IF EXISTS main.default.stg_fact_rentals;
+# MAGIC DROP TABLE IF EXISTS main.default.fact_rentals;
 # MAGIC CREATE TABLE main.default.fact_rentals AS
 # MAGIC with stg_fact_rentals as (
 # MAGIC     select *
@@ -238,7 +204,7 @@ display(df_stg_fact_rentals)
 
 # COMMAND ----------
 
-df_stg_fact_rentals.write.saveAsTable("main.default.fact_rentals_updated")
+df_stg_fact_rentals.write.mode("overwrite").saveAsTable("main.default.fact_rentals_updated")
 
 # COMMAND ----------
 
@@ -246,13 +212,6 @@ df_stg_fact_rentals.write.saveAsTable("main.default.fact_rentals_updated")
 # MAGIC create or replace table hive_metastore.default.fact_rentals as
 # MAGIC select *
 # MAGIC from main.default.fact_rentals_updated;
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select * from hive_metastore.default.dim_customer
-# MAGIC where customer_key = "1021011d7db10736e7602d0d0280029a";
-# MAGIC
 
 # COMMAND ----------
 
