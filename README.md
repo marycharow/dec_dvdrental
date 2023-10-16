@@ -8,7 +8,7 @@ Create an ELT pipeline moving data from the sample <a href="https://www.postgres
 ![plot](./dec_project2_solution_architecture.drawio.png)
 
 ## 3. DIMENSIONAL MODEL
-TBD-insert screenshot
+![plot](./dec_project2_erd.png)
 
 ## 4. APPROACH
 ### Hosting DVD rental database on RDS
