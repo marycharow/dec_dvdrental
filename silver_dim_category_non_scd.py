@@ -89,3 +89,10 @@ df_norm.createOrReplaceTempView("dim_category_view")
 # MAGIC CREATE OR REPLACE TABLE main.default.dim_category as
 # MAGIC SELECT category_id, name, last_update, category_key
 # MAGIC FROM dim_category_view;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE OR REPLACE TABLE HIVE_METASTORE.default.dim_category as
+# MAGIC SELECT *
+# MAGIC FROM main.default.dim_category;
