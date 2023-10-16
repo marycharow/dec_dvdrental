@@ -31,7 +31,9 @@ TBD
 TBD
 
 ## 5. VISUALIZATION
-We have created a <a href="https://efe6400f.us2a.app.preset.io/superset/dashboard/9/?native_filters_key=o98dQ_AqNUVy7Zn6i-ZBS1lqSgPF7V8kZBJ0Umb5bpjrHXT82eRA_ww8DPkj0MMW">Preset dashboard</a> to visualize key metrics that we created in the semantic layer, such as total_customers, active_customers, total_rentals, and total_films_rented
+We have created a <a href="https://efe6400f.us2a.app.preset.io/superset/dashboard/9/?native_filters_key=o98dQ_AqNUVy7Zn6i-ZBS1lqSgPF7V8kZBJ0Umb5bpjrHXT82eRA_ww8DPkj0MMW">Preset dashboard</a> to visualize key metrics that we created in the semantic layer, such as active_customers and total_rentals.
+
+The dashboard is scheduled to auto-refresh every 24 hours.
 
 ![plot](./dec_project2_preset.jpg)
 
