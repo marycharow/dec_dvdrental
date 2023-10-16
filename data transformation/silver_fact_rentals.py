@@ -233,6 +233,11 @@ display(df_stg_fact_rentals)
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC DROP TABLE IF EXISTS main.default.stg_fact_rentals_updated;
+
+# COMMAND ----------
+
 df_stg_fact_rentals.write.saveAsTable("main.default.fact_rentals_updated")
 
 # COMMAND ----------
