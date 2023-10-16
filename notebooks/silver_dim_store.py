@@ -10,6 +10,7 @@
 # COMMAND ----------
 
 from pyspark.sql.functions import col, json_tuple, current_timestamp, concat_ws, md5, explode
+from pyspark.sql.types import StringType,BooleanType,DateType,IntegerType,TimestampType
 from delta.tables import DeltaTable
 
 # COMMAND ----------
@@ -118,6 +119,16 @@ display(df_dim_store)
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC ## Update Data Types
+
+# COMMAND ----------
+
+df_dim_store = df_dim_store.withColumn("store_id",df_dim_store.store_id.cast(IntegerType())) \
+.withColumn("last_update", df_dim_store.last_update.cast(TimestampType()))
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ## Add key
 
 # COMMAND ----------
@@ -145,6 +156,13 @@ df_dim_store.write.saveAsTable("main.default.dim_store")
 
 # MAGIC %sql
 # MAGIC select * from main.default.dim_store limit 10;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC create or replace table hive_metastore.default.dim_store as
+# MAGIC select *
+# MAGIC from main.default.dim_store;
 
 # COMMAND ----------
 
