@@ -35,6 +35,9 @@ We have created a <a href="https://efe6400f.us2a.app.preset.io/superset/dashboar
 
 ![plot](./dec_project2_preset.jpg)
 
+![plot](./dec_project2_preset_refresh.png)
+
+
 ## 6. NEXT STEPS/BACKLOG
 A few items that would require further tweaking or we had hoped to complete as part of initial scope but ran out of time:
 1. We did not configure the advanced connection in Preset to read from a different catalog, so all silver table scripts include a step to copy over data into hive_metastore for Preset to read
