@@ -100,3 +100,10 @@ df_customer_norm.createOrReplaceTempView("dim_customer_view")
 # MAGIC CREATE OR REPLACE TABLE main.default.dim_customer as
 # MAGIC SELECT CUSTOMER_ID, STORE_ID, FIRST_NAME, LAST_NAME, IS_ACTIVE_CUSTOMER, CREATE_DATE, LAST_UPDATE, CUSTOMER_KEY
 # MAGIC FROM dim_customer_view;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE OR REPLACE TABLE HIVE_METASTORE.default.dim_customer as
+# MAGIC SELECT *
+# MAGIC FROM main.default.dim_customer;
