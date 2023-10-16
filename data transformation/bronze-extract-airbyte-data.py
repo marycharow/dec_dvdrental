@@ -55,6 +55,25 @@ df_store_norm = df_store.select(col("_airbyte_ab_id"),json_tuple(col("_airbyte_d
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC drop table if exists main.default.stg_actor;
+# MAGIC drop table if exists main.default.stg_address;
+# MAGIC drop table if exists main.default.stg_category;
+# MAGIC drop table if exists main.default.stg_city;
+# MAGIC drop table if exists main.default.stg_country;
+# MAGIC drop table if exists main.default.stg_customer;
+# MAGIC drop table if exists main.default.stg_film;
+# MAGIC drop table if exists main.default.stg_film_actor;
+# MAGIC drop table if exists main.default.stg_film_category;
+# MAGIC drop table if exists main.default.stg_inventory;
+# MAGIC drop table if exists main.default.stg_language;
+# MAGIC drop table if exists main.default.stg_payment;
+# MAGIC drop table if exists main.default.stg_rental;
+# MAGIC drop table if exists main.default.stg_staff;
+# MAGIC drop table if exists main.default.stg_store;
+
+# COMMAND ----------
+
 df_actor_norm.write.saveAsTable("main.default.stg_actor")
 df_address_norm.write.saveAsTable("main.default.stg_address")
 df_category_norm.write.saveAsTable("main.default.stg_category")
