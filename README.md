@@ -35,4 +35,8 @@ We have created a <a href="https://efe6400f.us2a.app.preset.io/superset/dashboar
 
 ![plot](./dec_project2_preset.jpg)
 
-   
+## 6. NEXT STEPS/BACKLOG
+A few items that would require further tweaking or we had hoped to complete as part of initial scope but ran out of time:
+1. We did not configure the advanced connection in Preset to read from a different catalog, so all silver table scripts include a step to copy over data into hive_metastore for Preset to read
+2. We added in a separate bronze notebook which writes the raw Airbyte data into staging tables, but did not refactor our silver table scripts to use these tables (only fact_rentals uses these staging tables)
+3. We originally wanted dim_category to be a slow-changing dimension table, but ran out of time to implement recommended approach so kept it as a non-SCD table
